@@ -1,0 +1,24 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "react"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+
+      "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:react/recommended"
+      ],
+
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
+      },
+
+      "rules": {
+        "react/jsx-uses-react": 0,
+        "react/react-in-jsx-scope": 0
+      }
+    }
+  ]
+}
