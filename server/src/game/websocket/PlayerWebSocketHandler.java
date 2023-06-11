@@ -6,9 +6,12 @@ import java.util.HashMap;
 import game.Game;
 import game.GameManager;
 import game.Player;
+import game.Question;
 import game.events.EventListener;
 import game.events.GameCreateEvent;
 import game.events.GameStartEvent;
+import game.events.QuestionStartEvent;
+import game.events.QuestionStartingEvent;
 import lib.http.Request;
 import lib.websocket.WebSocketHandler;
 import lib.websocket.WebSocketUtils;
@@ -20,7 +23,7 @@ public class PlayerWebSocketHandler implements WebSocketHandler {
 
   public PlayerWebSocketHandler(GameManager gameManager) {
     this.gameManager = gameManager;
-    gameManager.getEventManager().addListener(GameCreateEvent.class, new GameCreateEventListener());
+    gameManager.getEventManager().addListener(GameCreateEvent.class, gameCreateEventListener);
   }
 
   @Override
@@ -58,15 +61,17 @@ public class PlayerWebSocketHandler implements WebSocketHandler {
     players.remove(socket);
   }
 
-  private class GameCreateEventListener implements EventListener<GameCreateEvent> {
+  private EventListener<GameCreateEvent> gameCreateEventListener = new EventListener<GameCreateEvent>() {
     @Override
     public void onEvent(GameCreateEvent event) {
       Game game = event.getGame();
-      game.getEventManager().addListener(GameStartEvent.class, new GameStartEventListener());
+      game.getEventManager().addListener(GameStartEvent.class, gameStartEventListener);
+      game.getEventManager().addListener(QuestionStartingEvent.class, questionStartingEventListener);
+      game.getEventManager().addListener(QuestionStartEvent.class, questionStartEventListener);
     }
-  }
+  };
 
-  private class GameStartEventListener implements EventListener<GameStartEvent> {
+  private EventListener<GameStartEvent> gameStartEventListener = new EventListener<GameStartEvent>() {
     @Override
     public void onEvent(GameStartEvent event) {
       Game game = event.getGame();
@@ -79,5 +84,37 @@ public class PlayerWebSocketHandler implements WebSocketHandler {
         }
       }
     }
-  }
+  };
+
+  private EventListener<QuestionStartingEvent> questionStartingEventListener = new EventListener<QuestionStartingEvent>() {
+    @Override
+    public void onEvent(QuestionStartingEvent event) {
+      Game game = event.getGame();
+      int timeRemaining = event.getTimeRemaining();
+      for (Player player : game.getPlayers()) {
+        Socket socket = sockets.get(player);
+        try {
+          WebSocketUtils.sendWebsocketMessage(socket.getOutputStream(), "Question starting in : " + timeRemaining);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  };
+
+  private EventListener<QuestionStartEvent> questionStartEventListener = new EventListener<QuestionStartEvent>() {
+    @Override
+    public void onEvent(QuestionStartEvent event) {
+      Game game = event.getGame();
+      Question question = event.getQuestion();
+      for (Player player : game.getPlayers()) {
+        Socket socket = sockets.get(player);
+        try {
+          WebSocketUtils.sendWebsocketMessage(socket.getOutputStream(), "Question started!");
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  };
 }

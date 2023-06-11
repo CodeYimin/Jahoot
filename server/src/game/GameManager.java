@@ -6,17 +6,17 @@ import game.events.EventManager;
 import game.events.GameCreateEvent;
 
 public class GameManager {
-  // <ID, Game>
-  private HashMap<String, Game> games = new HashMap<>();
+  private HashMap<String, Game> games = new HashMap<>(); // <ID, Game>
   public EventManager eventManager = new EventManager();
 
   public GameManager() {
 
   }
 
-  public Game createGame() {
+  public Game createGame(Question[] questions) {
     // Todo: make sure game ids are unique
-    Game game = new Game();
+    // id = String.format("%04d", (int) (Math.random() * 10000));
+    Game game = new Game("1111", questions);
     games.put(game.getId(), game);
     eventManager.emitEvent(GameCreateEvent.class, new GameCreateEvent(this, game));
     return game;

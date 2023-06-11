@@ -5,17 +5,21 @@ import java.util.HashMap;
 
 import game.events.EventManager;
 import game.events.GameStartEvent;
+import game.events.QuestionEndEvent;
+import game.events.QuestionStartEvent;
+import game.events.QuestionStartingEvent;
 
 public class Game {
   private final String id;
-  private boolean started = false;
   private HashMap<String, Player> players = new HashMap<>();
   private EventManager eventManager = new EventManager();
+  private GameState state = GameState.LOBBY;
+  private int currentQuestionIndex = -1;
+  private Question[] questions;
 
-  public Game() {
-    // this.id = String.format("%04d", (int) (Math.random() * 10000));
-    // todo remove
-    this.id = "1111";
+  public Game(String id, Question[] questions) {
+    this.id = id;
+    this.questions = questions;
   }
 
   public String getId() {
@@ -38,12 +42,54 @@ public class Game {
   }
 
   public boolean start() {
-    if (started) {
+    if (state != GameState.LOBBY) {
       return false;
     }
-    started = true;
+    startNextQuestion();
     eventManager.emitEvent(GameStartEvent.class, new GameStartEvent(this));
     return true;
+  }
+
+  public void startNextQuestion() {
+    if (state == GameState.PLAYING) {
+      return;
+    }
+
+    state = GameState.PLAYING;
+    currentQuestionIndex++;
+    Question question = getCurrentQuestion();
+
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+        for (int i = 5000; i > 0; i -= 1000) {
+          eventManager.emitEvent(QuestionStartingEvent.class, new QuestionStartingEvent(Game.this, question, i));
+          try {
+            Thread.sleep(1000);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        }
+        state = GameState.PLAYING;
+        eventManager.emitEvent(QuestionStartEvent.class, new QuestionStartEvent(Game.this, question));
+      }
+    }).start();
+  }
+
+  public void endQuestion() {
+    if (state != GameState.PLAYING) {
+      return;
+    }
+    state = GameState.WAITING;
+    eventManager.emitEvent(QuestionEndEvent.class, new QuestionEndEvent(this, getCurrentQuestion()));
+  }
+
+  public Question getCurrentQuestion() {
+    if ((0 > currentQuestionIndex) || (currentQuestionIndex >= questions.length)) {
+      return null;
+    }
+
+    return questions[currentQuestionIndex];
   }
 
   public Collection<Player> getPlayers() {

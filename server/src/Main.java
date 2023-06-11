@@ -1,5 +1,6 @@
 import game.Game;
 import game.GameManager;
+import game.Question;
 import game.http.Join;
 import game.http.SetName;
 import game.websocket.PlayerWebSocketHandler;
@@ -27,6 +28,13 @@ public class Main {
       System.out.println("Exception");
     }
 
-    Game game = gameManager.createGame();
+    Question[] questions = new Question[] {
+        new Question(
+            "What is your favourite color",
+            new String[] { "A", "B", "C", "D" },
+            0,
+            30000)
+    };
+    Game game = gameManager.createGame(questions);
   }
 }
