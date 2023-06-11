@@ -65,6 +65,10 @@ public class Response {
 
     string += "\r\n";
 
+    if (body != null) {
+      string += body;
+    }
+
     return string;
   }
 }

@@ -10,4 +10,6 @@ public interface WebSocketHandler {
   public void onConnect(Socket socket);
 
   public void onMessage(Socket socket, String message);
+
+  public void onClose(Socket socket);
 }

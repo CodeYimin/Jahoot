@@ -14,6 +14,7 @@ package lib.http;
 
 //imports for network communication
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -78,9 +79,18 @@ public class HTTPServer {
         return;
       }
 
-      RequestHandler handler = requestHandlers.get(request.getPath() + " " + request.getType().toString());
-      if (handler != null) {
-        handler.onRequest(socket, request);
+      String path = request.getPath();
+      File file = new File("../public/" + path);
+      RequestHandler requestHandler = requestHandlers.get(path + " " + request.getType().toString());
+      if (file.exists()) {
+        try {
+          Response response = new FileResponse(ResponseStatus.OK, file);
+          response.send(socket.getOutputStream());
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      } else if (requestHandler != null) {
+        requestHandler.onRequest(socket, request);
       } else {
         Response notFoundResponse = new Response(ResponseStatus.NOT_FOUND);
 

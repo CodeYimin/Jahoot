@@ -4,8 +4,8 @@ public class Player {
   private final String id;
   private String name;
 
-  public Player() {
-    this.id = String.format("%06d", (int) (Math.random() * 1000000));
+  public Player(String id) {
+    this.id = id;
   }
 
   public String getId() {

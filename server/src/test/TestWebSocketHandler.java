@@ -31,4 +31,9 @@ public class TestWebSocketHandler implements WebSocketHandler {
 
     }
   }
+
+  @Override
+  public void onClose(Socket socket) {
+
+  }
 }

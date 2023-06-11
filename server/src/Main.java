@@ -2,32 +2,31 @@ import game.Game;
 import game.GameManager;
 import game.http.Join;
 import game.http.SetName;
+import game.websocket.PlayerWebSocketHandler;
 import lib.http.HTTPServer;
 import lib.http.RequestType;
 import lib.websocket.WebSocketHandler;
 import lib.websocket.WebSocketServer;
-import test.TestWebSocketHandler;
 
 public class Main {
   public static void main(String[] args) {
     GameManager gameManager = new GameManager();
-    Game game = gameManager.createGame();
-    System.out.println(game.getId());
 
     try {
-      HTTPServer server = new HTTPServer(5000);
+      HTTPServer server = new HTTPServer(80);
 
-      WebSocketHandler webSocketHandler = new TestWebSocketHandler();
-      WebSocketServer webSocketServer = new WebSocketServer(webSocketHandler);
+      WebSocketHandler playerWebSocketHandler = new PlayerWebSocketHandler(gameManager);
+      WebSocketServer playerWebSocketServer = new WebSocketServer(playerWebSocketHandler);
 
-      // server.addHandler("/hi", new TestRequestHandler());
-      // server.addHandler("/ws", webSocketServer);
       server.addHandler("/join", RequestType.POST, new Join(gameManager));
       server.addHandler("/setName", RequestType.POST, new SetName(gameManager));
+      server.addHandler("/wsPlayer", RequestType.GET, playerWebSocketServer);
 
-      System.out.println("Listening to port 5000!");
+      System.out.println("Listening to port 80!");
     } catch (Exception e) {
       System.out.println("Exception");
     }
+
+    Game game = gameManager.createGame();
   }
 }

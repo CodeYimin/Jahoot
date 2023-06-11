@@ -2,9 +2,13 @@ package game;
 
 import java.util.HashMap;
 
+import game.events.EventManager;
+import game.events.GameCreateEvent;
+
 public class GameManager {
   // <ID, Game>
   private HashMap<String, Game> games = new HashMap<>();
+  public EventManager eventManager = new EventManager();
 
   public GameManager() {
 
@@ -14,7 +18,12 @@ public class GameManager {
     // Todo: make sure game ids are unique
     Game game = new Game();
     games.put(game.getId(), game);
+    eventManager.emitEvent(GameCreateEvent.class, new GameCreateEvent(this, game));
     return game;
+  }
+
+  public EventManager getEventManager() {
+    return this.eventManager;
   }
 
   public Game getGame(String id) {
@@ -40,5 +49,9 @@ public class GameManager {
     }
 
     return null;
+  }
+
+  public Game getGame(Player player) {
+    return getGameByPlayerId(player.getId());
   }
 }

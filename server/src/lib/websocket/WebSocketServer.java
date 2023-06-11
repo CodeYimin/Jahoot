@@ -25,8 +25,7 @@ public class WebSocketServer implements RequestHandler {
 
       // Authenticate request using handler
       if (!handler.authorizeConnection(socket, request)) {
-        Response unauthorizedResponse = new Response(ResponseStatus.UNAUTHORIZED);
-        unauthorizedResponse.send(output);
+        new Response(ResponseStatus.UNAUTHORIZED).send(output);
         return;
       }
 
@@ -39,6 +38,9 @@ public class WebSocketServer implements RequestHandler {
         String message = WebSocketUtils.readWebsocketMessage(input);
         handler.onMessage(socket, message);
       }
+
+      // Socket is closed
+      handler.onClose(socket);
 
     } catch (Exception e) {
 
