@@ -9,7 +9,7 @@ import game.Player;
 import game.Question;
 import game.events.EventListener;
 import game.events.GameCreateEvent;
-import game.events.GameStartEvent;
+import game.events.PlayerJoinEvent;
 import game.events.QuestionStartEvent;
 import game.events.QuestionStartingEvent;
 import lib.http.Request;
@@ -46,13 +46,19 @@ public class PlayerWebSocketHandler implements WebSocketHandler {
   @Override
   public void onConnect(Socket socket) {
     Game game = gameManager.getGame(players.get(socket));
-    game.start();
+    Player player = players.get(socket);
+    game.getEventManager().emitEvent(PlayerJoinEvent.class, new PlayerJoinEvent(game, player));
   }
 
   @Override
   public void onMessage(Socket socket, String message) {
     Player player = players.get(socket);
-    System.out.println(player.getName());
+    System.out.println(message);
+    try {
+      WebSocketUtils.sendWebsocketMessage(socket.getOutputStream(), "You said: " + message);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -65,24 +71,8 @@ public class PlayerWebSocketHandler implements WebSocketHandler {
     @Override
     public void onEvent(GameCreateEvent event) {
       Game game = event.getGame();
-      game.getEventManager().addListener(GameStartEvent.class, gameStartEventListener);
       game.getEventManager().addListener(QuestionStartingEvent.class, questionStartingEventListener);
       game.getEventManager().addListener(QuestionStartEvent.class, questionStartEventListener);
-    }
-  };
-
-  private EventListener<GameStartEvent> gameStartEventListener = new EventListener<GameStartEvent>() {
-    @Override
-    public void onEvent(GameStartEvent event) {
-      Game game = event.getGame();
-      for (Player player : game.getPlayers()) {
-        Socket socket = sockets.get(player);
-        try {
-          WebSocketUtils.sendWebsocketMessage(socket.getOutputStream(), "Game started!");
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
     }
   };
 
@@ -91,10 +81,12 @@ public class PlayerWebSocketHandler implements WebSocketHandler {
     public void onEvent(QuestionStartingEvent event) {
       Game game = event.getGame();
       int timeRemaining = event.getTimeRemaining();
+
       for (Player player : game.getPlayers()) {
         Socket socket = sockets.get(player);
+        String jsonMessage = "{\"event\": \"questionStarting\", \"timeRemaining\": " + timeRemaining + "}";
         try {
-          WebSocketUtils.sendWebsocketMessage(socket.getOutputStream(), "Question starting in : " + timeRemaining);
+          WebSocketUtils.sendWebsocketMessage(socket.getOutputStream(), jsonMessage);
         } catch (Exception e) {
           e.printStackTrace();
         }
@@ -109,6 +101,7 @@ public class PlayerWebSocketHandler implements WebSocketHandler {
       Question question = event.getQuestion();
       for (Player player : game.getPlayers()) {
         Socket socket = sockets.get(player);
+
         try {
           WebSocketUtils.sendWebsocketMessage(socket.getOutputStream(), "Question started!");
         } catch (Exception e) {

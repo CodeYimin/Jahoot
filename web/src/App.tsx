@@ -1,48 +1,27 @@
-import styled from "@emotion/styled";
+import { Box, Button, Center, HStack } from "@chakra-ui/react";
 import { useState } from "react";
+import Operator from "./operator/Operator";
+import { Player } from "./player/Player";
+
+type State = "Operator" | "Player";
 
 export function App() {
-  const [input, setInput] = useState<string>("");
-
-  async function thing() {
-    await fetch("/join", {
-      method: "POST",
-      body: "1111",
-    });
-    await fetch("/setName", {
-      method: "POST",
-      body: "A",
-    });
-    const ws = new WebSocket("ws://" + window.location.host + "/wsPlayer");
-    ws.onopen = () => {
-      ws.send("Hello oelurh");
-    };
-
-    ws.onmessage = (event) => {
-      console.log(event.data);
-    };
-  }
+  const [state, setState] = useState<State | undefined>();
 
   return (
-    <Container>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          // eslint-disable-next-line
-          thing();
-        }}
-      >
-        <input
-          type="text"
-          value={input}
-          onChange={(event) => {
-            setInput(event.target.value);
-          }}
-        />
-        <button>Submit</button>
-      </form>
-    </Container>
+    <Box textAlign="center">
+      {state === "Operator" ? (
+        <Operator />
+      ) : state === "Player" ? (
+        <Player />
+      ) : (
+        <Center h="100vh">
+          <HStack>
+            <Button onClick={() => setState("Player")}>Player</Button>
+            <Button onClick={() => setState("Operator")}>Operator</Button>
+          </HStack>
+        </Center>
+      )}
+    </Box>
   );
 }
-
-const Container = styled.div``;

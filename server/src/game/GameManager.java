@@ -13,10 +13,10 @@ public class GameManager {
 
   }
 
-  public Game createGame(Question[] questions) {
+  public Game createGame(Operator operator, Question[] questions) {
     // Todo: make sure game ids are unique
     // id = String.format("%04d", (int) (Math.random() * 10000));
-    Game game = new Game("1111", questions);
+    Game game = new Game("1111", operator, questions);
     games.put(game.getId(), game);
     eventManager.emitEvent(GameCreateEvent.class, new GameCreateEvent(this, game));
     return game;
@@ -30,11 +30,31 @@ public class GameManager {
     return games.get(id);
   }
 
+  public Game getGame(Operator operator) {
+    for (Game game : games.values()) {
+      if (game.getOperator().equals(operator)) {
+        return game;
+      }
+    }
+
+    return null;
+  }
+
   public Player getPlayer(String id) {
     for (Game game : games.values()) {
       Player player = game.getPlayer(id);
       if (player != null) {
         return player;
+      }
+    }
+
+    return null;
+  }
+
+  public Operator getOperator(String id) {
+    for (Game game : games.values()) {
+      if (game.getOperator().getId().equals(id)) {
+        return game.getOperator();
       }
     }
 

@@ -4,26 +4,31 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import game.events.EventManager;
-import game.events.GameStartEvent;
 import game.events.QuestionEndEvent;
 import game.events.QuestionStartEvent;
 import game.events.QuestionStartingEvent;
 
 public class Game {
   private final String id;
+  private Operator operator;
   private HashMap<String, Player> players = new HashMap<>();
   private EventManager eventManager = new EventManager();
   private GameState state = GameState.LOBBY;
   private int currentQuestionIndex = -1;
   private Question[] questions;
 
-  public Game(String id, Question[] questions) {
+  public Game(String id, Operator operator, Question[] questions) {
     this.id = id;
+    this.operator = operator;
     this.questions = questions;
   }
 
   public String getId() {
     return this.id;
+  }
+
+  public Operator getOperator() {
+    return this.operator;
   }
 
   public Player createPlayer() {
@@ -39,15 +44,6 @@ public class Game {
 
   public EventManager getEventManager() {
     return this.eventManager;
-  }
-
-  public boolean start() {
-    if (state != GameState.LOBBY) {
-      return false;
-    }
-    startNextQuestion();
-    eventManager.emitEvent(GameStartEvent.class, new GameStartEvent(this));
-    return true;
   }
 
   public void startNextQuestion() {
