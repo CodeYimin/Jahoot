@@ -1,4 +1,4 @@
-import { Box, Center, Text, VStack } from "@chakra-ui/react";
+import { Box, Center, Grid, Text, VStack } from "@chakra-ui/react";
 import { ReactElement } from "react";
 import { QuestionData } from "../types/operatorWebsocketEvents";
 
@@ -13,11 +13,13 @@ function Question({ question }: QuestionProps): ReactElement {
         <VStack>
           <Text fontSize="6xl">{question.question}</Text>
           <Text fontSize="3xl">Answers:</Text>
-          {question.answers.map((answer) => (
-            <Text fontSize="3xl" key={answer}>
-              {answer}
-            </Text>
-          ))}
+          <Grid templateColumns="1fr 1fr" gap="6">
+            {question.answers.map((answer) => (
+              <Text fontSize="3xl" key={answer}>
+                {answer}
+              </Text>
+            ))}
+          </Grid>
         </VStack>
       </Center>
     </Box>

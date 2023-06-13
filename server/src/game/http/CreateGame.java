@@ -27,8 +27,8 @@ public class CreateGame implements RequestHandler {
         new Question(
             "What is your favourite color",
             new String[] { "A", "B", "C", "D" },
-            0,
-            30000)
+            1,
+            1000)
     };
     Game game = gameManager.createGame(operator, questions);
 

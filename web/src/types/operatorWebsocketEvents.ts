@@ -18,6 +18,7 @@ export interface QuestionStartEvent extends WebsocketEvent {
 
 export interface QuestionData {
   question: string;
+  duration: number;
   answers: string[];
 }
 
@@ -28,7 +29,7 @@ export interface QuestionAnswerEvent extends WebsocketEvent {
 export interface QuestionEndEvent extends WebsocketEvent {
   event: "questionEnd";
   question: QuestionData;
-  playerAnswers: number[];
+  answerCounts: number[];
   correctAnswerIndex: number;
   leaderboard: LeaderboardEntry[];
 }

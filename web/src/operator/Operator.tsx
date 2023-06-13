@@ -5,6 +5,7 @@ import {
   PlayerJoinEvent,
   QuestionData,
   QuestionEndEvent,
+  QuestionStartEvent,
   QuestionStartingEvent,
 } from "../types/operatorWebsocketEvents";
 import { WebsocketEvent } from "../types/websocketEvents";
@@ -12,6 +13,7 @@ import CreateGame from "./CreateGame";
 import Leaderboard from "./Leaderboard";
 import Lobby from "./Lobby";
 import Question from "./Question";
+import QuestionEnd from "./QuestionEnd";
 import QuestionStarting from "./QuestionStarting";
 
 type State =
@@ -19,6 +21,7 @@ type State =
   | "lobby"
   | "questionStarting"
   | "question"
+  | "questionEnd"
   | "leaderboard";
 
 function Operator(): ReactElement {
@@ -31,7 +34,7 @@ function Operator(): ReactElement {
   const [question, setQuestion] = useState<QuestionData | undefined>(undefined);
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState<number>(-1);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-  const [playerAnswers, setPlayerAnswers] = useState<number[]>([]);
+  const [answerCounts, setAnswerCounts] = useState<number[]>([]);
 
   const [ws, setWs] = useState<WebSocket | undefined>(undefined);
 
@@ -50,20 +53,22 @@ function Operator(): ReactElement {
       console.log(event);
       const data = JSON.parse(event.data as string) as WebsocketEvent;
       if (data.event === "playerJoin") {
-        const playerData = data as PlayerJoinEvent;
-        setPlayers((old) => [...old, playerData.name]);
+        const eventData = data as PlayerJoinEvent;
+        setPlayers((old) => [...old, eventData.name]);
       } else if (data.event === "questionStarting") {
-        const questionData = data as QuestionStartingEvent;
-        setTimeRemaining(questionData.timeRemaining);
-        setQuestion(questionData.question);
+        const eventData = data as QuestionStartingEvent;
+        setTimeRemaining(eventData.timeRemaining);
+        setQuestion(eventData.question);
         setState("questionStarting");
       } else if (data.event === "questionStart") {
+        const eventData = data as QuestionStartEvent;
         setState("question");
       } else if (data.event === "questionEnd") {
-        const questionData = data as QuestionEndEvent;
-        setLeaderboard(questionData.leaderboard);
-        setCorrectAnswerIndex(questionData.correctAnswerIndex);
-        setPlayerAnswers(questionData.playerAnswers);
+        const eventData = data as QuestionEndEvent;
+        setLeaderboard(eventData.leaderboard);
+        setCorrectAnswerIndex(eventData.correctAnswerIndex);
+        setAnswerCounts(eventData.answerCounts);
+        setState("questionEnd");
       }
     };
     setWs(ws);
@@ -71,6 +76,10 @@ function Operator(): ReactElement {
 
   async function handleStartNextQuestion() {
     ws?.send("startNextQuestion");
+  }
+
+  function handleLeaderboard() {
+    setState("leaderboard");
   }
 
   return (
@@ -91,8 +100,18 @@ function Operator(): ReactElement {
         <QuestionStarting timeRemaining={timeRemaining} question={question!} />
       ) : state === "question" ? (
         <Question question={question!} />
+      ) : state === "questionEnd" ? (
+        <QuestionEnd
+          question={question!}
+          correctAnswerIndex={correctAnswerIndex}
+          answerCounts={answerCounts}
+          onLeaderboard={handleLeaderboard}
+        />
       ) : state === "leaderboard" ? (
-        <Leaderboard entries={[]} onStartNextQuestion={() => {}} />
+        <Leaderboard
+          entries={leaderboard}
+          onStartNextQuestion={handleStartNextQuestion}
+        />
       ) : null}
     </Box>
   );
