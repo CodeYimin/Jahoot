@@ -14,14 +14,21 @@ function Leaderboard({
   return (
     <Box>
       <Center h="100vh">
-        <VStack>
+        <VStack spacing="5">
           <Text fontSize="6xl">Leaderboard</Text>
-          {entries.slice(0, 5).map((entry) => (
-            <Text fontSize="xl" key={entry.player}>
-              {entry.player}: {entry.score}
+          {entries.slice(0, 5).map((entry, i) => (
+            <Text
+              fontSize="xl"
+              key={entry.player}
+              bgColor="whiteAlpha.200"
+              p="5"
+            >
+              {i + 1}. {entry.player}: {entry.score}
             </Text>
           ))}
-          <Button onClick={onStartNextQuestion}>Start Next Question</Button>
+          <Button size="lg" onClick={onStartNextQuestion}>
+            Start Next Question
+          </Button>
         </VStack>
       </Center>
     </Box>

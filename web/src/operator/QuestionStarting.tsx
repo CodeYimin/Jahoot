@@ -14,7 +14,7 @@ function QuestionStarting({
   return (
     <Box>
       <Center h="100vh">
-        <VStack>
+        <VStack spacing="5">
           <Text fontSize="6xl">{question.question}</Text>
           <Text fontSize="3xl">
             Answers start in {timeRemaining / 1000} seconds

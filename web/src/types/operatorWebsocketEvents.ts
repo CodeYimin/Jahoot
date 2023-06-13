@@ -34,6 +34,11 @@ export interface QuestionEndEvent extends WebsocketEvent {
   leaderboard: LeaderboardEntry[];
 }
 
+export interface GameEndEvent extends WebsocketEvent {
+  event: "gameEnd";
+  leaderboard: LeaderboardEntry[];
+}
+
 export interface LeaderboardEntry {
   player: string;
   score: number;

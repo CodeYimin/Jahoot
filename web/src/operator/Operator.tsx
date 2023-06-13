@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { ReactElement, useState } from "react";
 import {
+  GameEndEvent,
   LeaderboardEntry,
   PlayerJoinEvent,
   QuestionData,
@@ -10,6 +11,7 @@ import {
 } from "../types/operatorWebsocketEvents";
 import { WebsocketEvent } from "../types/websocketEvents";
 import CreateGame from "./CreateGame";
+import GameEnd from "./GameEnd";
 import Leaderboard from "./Leaderboard";
 import Lobby from "./Lobby";
 import Question from "./Question";
@@ -22,7 +24,8 @@ type State =
   | "questionStarting"
   | "question"
   | "questionEnd"
-  | "leaderboard";
+  | "leaderboard"
+  | "gameEnd";
 
 function Operator(): ReactElement {
   const [state, setState] = useState<State>("createGame");
@@ -62,6 +65,7 @@ function Operator(): ReactElement {
         setState("questionStarting");
       } else if (data.event === "questionStart") {
         const eventData = data as QuestionStartEvent;
+        setQuestion(eventData.question);
         setState("question");
       } else if (data.event === "questionEnd") {
         const eventData = data as QuestionEndEvent;
@@ -69,6 +73,10 @@ function Operator(): ReactElement {
         setCorrectAnswerIndex(eventData.correctAnswerIndex);
         setAnswerCounts(eventData.answerCounts);
         setState("questionEnd");
+      } else if (data.event === "gameEnd") {
+        const eventData = data as GameEndEvent;
+        setLeaderboard(eventData.leaderboard);
+        setState("gameEnd");
       }
     };
     setWs(ws);
@@ -112,6 +120,8 @@ function Operator(): ReactElement {
           entries={leaderboard}
           onStartNextQuestion={handleStartNextQuestion}
         />
+      ) : state == "gameEnd" ? (
+        <GameEnd leaderboard={leaderboard} />
       ) : null}
     </Box>
   );

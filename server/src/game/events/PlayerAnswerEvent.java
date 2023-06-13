@@ -1,24 +1,28 @@
 package game.events;
 
+import game.Answer;
 import game.Game;
 import game.Player;
 
 /**
- * Represents an event where a player joins a game.
+ * Represents an event where a player answers a question.
  */
-public class PlayerJoinEvent implements Event {
+public class PlayerAnswerEvent implements Event {
   private Game game;
   private Player player;
+  private Answer answer;
 
   /**
-   * Creates a new player join event.
+   * Creates a new player answer event.
    * 
    * @param game   The game.
    * @param player The player.
+   * @param answer The answer.
    */
-  public PlayerJoinEvent(Game game, Player player) {
+  public PlayerAnswerEvent(Game game, Player player, Answer answer) {
     this.game = game;
     this.player = player;
+    this.answer = answer;
   }
 
   /**
@@ -37,5 +41,14 @@ public class PlayerJoinEvent implements Event {
    */
   public Player getPlayer() {
     return this.player;
+  }
+
+  /**
+   * Gets the answer.
+   * 
+   * @return The answer.
+   */
+  public Answer getAnswer() {
+    return this.answer;
   }
 }

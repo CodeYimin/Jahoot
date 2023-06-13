@@ -10,6 +10,7 @@ import game.Player;
 import game.Question;
 import game.events.EventListener;
 import game.events.GameCreateEvent;
+import game.events.GameEndEvent;
 import game.events.PlayerJoinEvent;
 import game.events.QuestionEndEvent;
 import game.events.QuestionStartEvent;
@@ -18,11 +19,19 @@ import lib.http.Request;
 import lib.websocket.WebSocketHandler;
 import lib.websocket.WebSocketUtils;
 
+/**
+ * Handles WebSocket connections from operators.
+ */
 public class OperatorWebSocketHandler implements WebSocketHandler {
   private GameManager gameManager;
   private HashMap<Socket, Operator> operators = new HashMap<>();
   private HashMap<Operator, Socket> sockets = new HashMap<>();
 
+  /**
+   * Creates a new OperatorWebSocketHandler.
+   * 
+   * @param gameManager The GameManager to use.
+   */
   public OperatorWebSocketHandler(GameManager gameManager) {
     this.gameManager = gameManager;
     gameManager.getEventManager().addListener(GameCreateEvent.class, gameCreateEventListener);
@@ -74,6 +83,7 @@ public class OperatorWebSocketHandler implements WebSocketHandler {
       game.getEventManager().addListener(QuestionStartingEvent.class, questionStartingListener);
       game.getEventManager().addListener(QuestionStartEvent.class, questionStartListener);
       game.getEventManager().addListener(QuestionEndEvent.class, questionEndListener);
+      game.getEventManager().addListener(GameEndEvent.class, gameEndListener);
     }
   };
 
@@ -196,6 +206,34 @@ public class OperatorWebSocketHandler implements WebSocketHandler {
       jsonMessage += "]";
 
       jsonMessage += ", \"correctAnswerIndex\": " + question.getCorrectAnswerIndex() + "}";
+
+      try {
+        WebSocketUtils.sendWebsocketMessage(socket.getOutputStream(), jsonMessage);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  };
+
+  private EventListener<GameEndEvent> gameEndListener = new EventListener<GameEndEvent>() {
+    @Override
+    public void onEvent(GameEndEvent event) {
+      Game game = event.getGame();
+      Socket socket = sockets.get(game.getOperator());
+
+      String jsonMessage = "{\"event\": \"gameEnd\","
+          + "\"leaderboard\": [";
+
+      Player[] leaderboard = game.getPlayersAscendingScore();
+      for (int i = 0; i < leaderboard.length; i++) {
+        jsonMessage += "{\"player\": \"" + leaderboard[i].getName() + "\", \"score\": "
+            + leaderboard[i].getScore(game.getQuestions()) + "}";
+        if (i < leaderboard.length - 1) {
+          jsonMessage += ",";
+        }
+      }
+
+      jsonMessage += "]}";
 
       try {
         WebSocketUtils.sendWebsocketMessage(socket.getOutputStream(), jsonMessage);

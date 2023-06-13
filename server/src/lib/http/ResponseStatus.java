@@ -1,8 +1,17 @@
 package lib.http;
 
+/**
+ * The status of an HTTP response.
+ */
 public enum ResponseStatus {
   SWITCHING_PROTOCOLS, OK, NOT_FOUND, UNAUTHORIZED, FORBIDDEN;
 
+  /**
+   * Converts a string to a ResponseStatus.
+   * 
+   * @param string The string to convert.
+   * @return The ResponseStatus.
+   */
   public static ResponseStatus fromString(String string) {
     if (string.equals("101 Switching Protocols")) {
       return SWITCHING_PROTOCOLS;
@@ -19,6 +28,11 @@ public enum ResponseStatus {
     }
   }
 
+  /**
+   * Converts a ResponseStatus to a string.
+   * 
+   * @return The string.
+   */
   public String toString() {
     if (this == SWITCHING_PROTOCOLS) {
       return "101 Switching Protocols";

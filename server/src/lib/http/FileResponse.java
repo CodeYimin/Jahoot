@@ -5,9 +5,19 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * A response that sends a file.
+ */
 public class FileResponse extends Response {
   private File file;
 
+  /**
+   * Creates a new FileResponse.
+   * 
+   * @param status The status of the response.
+   * @param file   The file to send.
+   * @throws IOException
+   */
   public FileResponse(ResponseStatus status, File file) throws IOException {
     super(status);
     this.file = file;
@@ -34,6 +44,11 @@ public class FileResponse extends Response {
     addHeader("Content-Type", contentType);
   }
 
+  /**
+   * Gets the file that is being sent.
+   * 
+   * @return The file that is being sent.
+   */
   public File getFile() {
     return this.file;
   }

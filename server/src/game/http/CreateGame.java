@@ -11,9 +11,17 @@ import lib.http.RequestHandler;
 import lib.http.Response;
 import lib.http.ResponseStatus;
 
+/**
+ * Handles HTTP requests to create a game.
+ */
 public class CreateGame implements RequestHandler {
   private GameManager gameManager;
 
+  /**
+   * Creates a new CreateGame.
+   * 
+   * @param gameManager The GameManager to use.
+   */
   public CreateGame(GameManager gameManager) {
     this.gameManager = gameManager;
   }
@@ -25,10 +33,30 @@ public class CreateGame implements RequestHandler {
 
     Question[] questions = new Question[] {
         new Question(
-            "What is your favourite color",
-            new String[] { "A", "B", "C", "D" },
+            "Is this game good?",
+            new String[] { "No", "Yes", "Very yes", "No no" },
+            2,
+            5000),
+        new Question(
+            "Did this game give the creator depression?",
+            new String[] { "Yes", "No" },
+            0,
+            5000),
+        new Question(
+            "Would I do this again?",
+            new String[] { "Yes", "No", "Absolutely not" },
+            2,
+            5000),
+        new Question(
+            "What Mark should this game get?",
+            new String[] { "0%", "20%", "40%", "60%", "80%", "100%" },
+            5,
+            15000),
+        new Question(
+            "Did you enjoy playing this game?",
+            new String[] { "Yes", "No" },
             1,
-            1000)
+            5000),
     };
     Game game = gameManager.createGame(operator, questions);
 

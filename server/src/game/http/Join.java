@@ -10,9 +10,17 @@ import lib.http.RequestHandler;
 import lib.http.Response;
 import lib.http.ResponseStatus;
 
+/**
+ * Handles HTTP requests to join a game.
+ */
 public class Join implements RequestHandler {
   private GameManager gameManager;
 
+  /**
+   * Creates a new Join.
+   * 
+   * @param gameManager The GameManager to use.
+   */
   public Join(GameManager gameManager) {
     this.gameManager = gameManager;
   }

@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Represents an HTTP request.
+ */
 public class Request {
   private RequestType type;
   private String path;
@@ -14,6 +17,12 @@ public class Request {
   private HashMap<String, String> cookies = new HashMap<>();
   private String body;
 
+  /**
+   * Creates a new request from an input stream.
+   * 
+   * @param data The input stream to read from.
+   * @throws IOException
+   */
   public Request(InputStream data) throws IOException {
     boolean isFirstLine = true;
     boolean finishReading = false;
@@ -67,30 +76,67 @@ public class Request {
     }
   }
 
+  /**
+   * Gets the type of the request.
+   * 
+   * @return The type of the request.
+   */
   public RequestType getType() {
     return this.type;
   }
 
+  /**
+   * Gets the path of the request.
+   * 
+   * @return The path of the request.
+   */
   public String getPath() {
     return this.path;
   }
 
+  /**
+   * Gets the protocol of the request.
+   * 
+   * @return The protocol of the request.
+   */
   public String getProtocol() {
     return this.protocol;
   }
 
+  /**
+   * Gets the headers of the request.
+   * 
+   * @return The headers of the request.
+   */
   public HashMap<String, String> getHeaders() {
     return this.headers;
   }
 
+  /**
+   * Gets a header of the request.
+   * 
+   * @param name The name of the header.
+   * @return The value of the header.
+   */
   public String getHeader(String name) {
     return this.headers.get(name);
   }
 
+  /**
+   * Gets a cookie of the request.
+   * 
+   * @param name The name of the cookie.
+   * @return The value of the cookie.
+   */
   public String getCookie(String name) {
     return this.cookies.get(name);
   }
 
+  /**
+   * Gets the body of the request.
+   * 
+   * @return The body of the request.
+   */
   public String getBody() {
     return this.body;
   }

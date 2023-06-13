@@ -18,9 +18,8 @@ function QuestionEnd({
   return (
     <Box>
       <Center h="100vh">
-        <VStack>
+        <VStack spacing="5">
           <Text fontSize="6xl">{question.question}</Text>
-          <Text fontSize="3xl">Answers:</Text>
           <Grid templateColumns="1fr 1fr" gap="6">
             {question.answers.map((answer, i) => (
               <Text
@@ -29,12 +28,16 @@ function QuestionEnd({
                 color={
                   i === correctAnswerIndex ? "green.500" : "whiteAlpha.500"
                 }
+                bgColor="whiteAlpha.200"
+                p="5"
               >
                 {answer}: {answerCounts[i]} answers
               </Text>
             ))}
           </Grid>
-          <Button onClick={onLeaderboard}>Next</Button>
+          <Button size="lg" onClick={onLeaderboard}>
+            Next
+          </Button>
         </VStack>
       </Center>
     </Box>

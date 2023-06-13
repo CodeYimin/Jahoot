@@ -19,10 +19,5 @@ export interface QuestionEndEvent extends WebsocketEvent {
 
 export interface GameEndEvent extends WebsocketEvent {
   event: "gameEnd";
-  leaderboard: LeaderboardEntry[];
-}
-
-export interface LeaderboardEntry extends WebsocketEvent {
-  player: string;
-  score: number;
+  placement: number;
 }

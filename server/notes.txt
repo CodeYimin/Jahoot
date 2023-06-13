@@ -16,23 +16,3 @@
 + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
 |                     Payload Data continued ...                |
 +---------------------------------------------------------------+
-
-Operator get request create game
-server sends back operator cookie
-server creates operator class
-server creates game
-operator connects to game operator websocket
-server checks credentials of operator owns game
-
-server waits for players to join game websocket.
-
-operator sends start game to websocket
-server sends websocket "game started" to all players on websocket of game.
-server sends websocket "questionStart: 5000" to all players on game websocket 
-server sends websocket "{question: "whats your fav color", answers: ["A", "B", "C", "D"]}
-
-player sends websocket "2"
-
-server sends websocket "correct"
-
-loop back to "questionStart: 5000"

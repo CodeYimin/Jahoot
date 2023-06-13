@@ -20,15 +20,31 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 
+/**
+ * A simple HTTP server.
+ */
 public class HTTPServer {
   // <request path + " " + type, request listener>
   private HashMap<String, RequestHandler> requestHandlers = new HashMap<>();
 
+  /**
+   * Creates a new HTTPServer.
+   * 
+   * @param port The port to listen on.
+   * @throws IOException
+   */
   public HTTPServer(int port) throws IOException {
     Thread serverSocketListener = new Thread(new ServerSocketListener(port));
     serverSocketListener.start();
   }
 
+  /**
+   * Adds a request handler to the server.
+   * 
+   * @param path    The path to listen for.
+   * @param type    The type of request to listen for.
+   * @param handler The handler to call when a request is received.
+   */
   public void addHandler(String path, RequestType type, RequestHandler handler) {
     requestHandlers.put(path + " " + type.toString(), handler);
   }

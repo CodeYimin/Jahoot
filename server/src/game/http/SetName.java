@@ -9,9 +9,17 @@ import lib.http.RequestHandler;
 import lib.http.Response;
 import lib.http.ResponseStatus;
 
+/**
+ * Handles HTTP requests to set a player's name.
+ */
 public class SetName implements RequestHandler {
   private GameManager gameManager;
 
+  /**
+   * Creates a new SetName.
+   * 
+   * @param gameManager The GameManager to use.
+   */
   public SetName(GameManager gameManager) {
     this.gameManager = gameManager;
   }

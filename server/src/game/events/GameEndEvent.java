@@ -3,17 +3,17 @@ package game.events;
 import game.Game;
 
 /**
- * Represents an event where a game starts.
+ * Represents an event where a game ends.
  */
-public class GameStartEvent implements Event {
+public class GameEndEvent implements Event {
   private final Game game;
 
   /**
-   * Creates a new game start event.
+   * Creates a new game end event.
    * 
    * @param game The game.
    */
-  public GameStartEvent(Game game) {
+  public GameEndEvent(Game game) {
     this.game = game;
   }
 

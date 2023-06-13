@@ -17,8 +17,12 @@ export function App() {
       ) : (
         <Center h="100vh">
           <HStack>
-            <Button onClick={() => setState("Player")}>Player</Button>
-            <Button onClick={() => setState("Operator")}>Operator</Button>
+            <Button size="lg" onClick={() => setState("Player")}>
+              Player
+            </Button>
+            <Button size="lg" onClick={() => setState("Operator")}>
+              Operator
+            </Button>
           </HStack>
         </Center>
       )}

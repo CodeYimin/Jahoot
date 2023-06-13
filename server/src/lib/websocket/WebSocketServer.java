@@ -9,9 +9,18 @@ import lib.http.RequestHandler;
 import lib.http.Response;
 import lib.http.ResponseStatus;
 
+/**
+ * A WebSocket server that handles WebSocket connections and forwards messages
+ * to a WebSocketHandler.
+ */
 public class WebSocketServer implements RequestHandler {
   private WebSocketHandler handler;
 
+  /**
+   * Creates a new WebSocketServer.
+   * 
+   * @param handler The WebSocketHandler that will handle WebSocket connections.
+   */
   public WebSocketServer(WebSocketHandler handler) {
     this.handler = handler;
   }

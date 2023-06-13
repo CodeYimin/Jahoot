@@ -9,7 +9,9 @@ function CreateGame({ onCreateGame }: CreateGameProps): ReactElement {
   return (
     <Box>
       <Center h="100vh">
-        <Button onClick={onCreateGame}>Create Game</Button>
+        <Button size="lg" onClick={onCreateGame}>
+          Create Game
+        </Button>
       </Center>
     </Box>
   );

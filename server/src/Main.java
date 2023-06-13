@@ -1,7 +1,4 @@
-import game.Game;
 import game.GameManager;
-import game.Operator;
-import game.Question;
 import game.http.CreateGame;
 import game.http.Join;
 import game.http.SetName;
@@ -35,14 +32,5 @@ public class Main {
     } catch (Exception e) {
       System.out.println("Exception");
     }
-
-    Question[] questions = new Question[] {
-        new Question(
-            "What is your favourite color",
-            new String[] { "A", "B", "C", "D" },
-            0,
-            30000)
-    };
-    Game game = gameManager.createGame(new Operator(null), questions);
   }
 }

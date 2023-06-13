@@ -12,8 +12,20 @@ import lib.http.Request;
 import lib.http.Response;
 import lib.http.ResponseStatus;
 
+/**
+ * A utility class for working with WebSockets.
+ */
 public class WebSocketUtils {
-
+  /**
+   * Upgrades an HTTP connection to a WebSocket connection.
+   * 
+   * @param output  The output stream to send the response to.
+   * @param request The request that was received.
+   * @throws UnsupportedEncodingException
+   * @throws IOException
+   * @throws IllegalStateException
+   * @throws NoSuchAlgorithmException
+   */
   public static void upgradeToWebsocket(OutputStream output, Request request)
       throws UnsupportedEncodingException, IOException, IllegalStateException,
       NoSuchAlgorithmException {
@@ -29,6 +41,13 @@ public class WebSocketUtils {
     response.send(output);
   }
 
+  /**
+   * Reads a websocket message from the client.
+   * 
+   * @param input The input stream to read the message from.
+   * @return The message that was read.
+   * @throws IOException
+   */
   public static String readWebsocketMessage(InputStream input) throws IOException {
     int a = input.read(); // Bit 1: FIN, RSV1, RSV2, RSV3, opcode
     int length = input.read() & 0b01111111;
@@ -56,6 +75,13 @@ public class WebSocketUtils {
     return decodedData;
   }
 
+  /**
+   * Sends a websocket message to the client.
+   * 
+   * @param output  The output stream to send the message to.
+   * @param message The message to send.
+   * @throws IOException
+   */
   public static void sendWebsocketMessage(OutputStream output, String message) throws IOException {
     output.write(0b10000001);
     if (message.length() < 126) {

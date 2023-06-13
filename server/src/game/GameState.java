@@ -1,8 +1,17 @@
 package game;
 
+/**
+ * Represents the state of a game.
+ */
 public enum GameState {
   LOBBY, WAITING, PLAYING, FINISHED;
 
+  /**
+   * Converts a string to a game state.
+   * 
+   * @param string The string to convert.
+   * @return The game state.
+   */
   public static GameState fromString(String string) {
     if (string.equals("LOBBY")) {
       return LOBBY;
@@ -17,6 +26,11 @@ public enum GameState {
     }
   }
 
+  /**
+   * Converts a game state to a string.
+   * 
+   * @return The string.
+   */
   public String toString() {
     if (this == LOBBY) {
       return "LOBBY";
